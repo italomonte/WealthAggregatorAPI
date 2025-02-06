@@ -21,7 +21,7 @@ public class UserService {
 
         //DTO -> Entity
         var entity = new User(
-                UUID.randomUUID(),
+                null,
                 createUserDto.username(),
                 createUserDto.email(),
                 createUserDto.password(),
