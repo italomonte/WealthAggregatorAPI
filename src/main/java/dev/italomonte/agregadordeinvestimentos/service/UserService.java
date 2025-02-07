@@ -7,6 +7,7 @@ import dev.italomonte.agregadordeinvestimentos.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -40,6 +41,30 @@ public class UserService {
 
     public List<User> listUsers() {
         return userRepository.findAll();
+    }
+
+    public Optional<User> updateUserById(String userId, UpdateUserDto updateUserDto) {
+        var id = UUID.fromString(userId);
+
+        var userEntity = userRepository.findById(id);
+
+        if (userEntity.isPresent()) {
+            var user = userEntity.get();
+
+            if (updateUserDto.username() != null) {
+                user.setUsername(updateUserDto.username());
+            }
+
+            if (updateUserDto.password() != null) {
+                user.setPassword(updateUserDto.password());
+            }
+
+            // JPA identify if that entity exists, and update it
+            userRepository.save(user);
+
+        }
+
+        return userEntity;
     }
 
     public void deleteUserById(String userId) {
