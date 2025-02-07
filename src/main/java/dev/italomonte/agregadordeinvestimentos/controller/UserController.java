@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/v1/users")
@@ -41,10 +42,10 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @PutMapping("/{userId")
-    public ResponseEntity<Void> updateUserById(@PathVariable("userId") String userId, @RequestBody UpdateUserDto updateUserDto) {
+    @PutMapping("/{userId}")
+    public ResponseEntity<Optional<User>> updateUserById(@PathVariable("userId") String userId, @RequestBody UpdateUserDto updateUserDto) {
         var user = userService.updateUserById(userId, updateUserDto);
-        return new ResponseEntity.ok(user);
+        return ResponseEntity.ok(user);
     }
 
     @DeleteMapping("/{userId}")
