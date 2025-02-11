@@ -92,3 +92,47 @@ class UserServiceTest {
 
     }
 
+    @Nested
+    class getUserById {
+        @Test
+        @DisplayName("Get User By Id With Success When Optional Is Present")
+        void shouldGetUserByIdWithSuccessWhenOptionalIsPresent() {
+
+            // Arrange
+            var user = new User(
+                    UUID.randomUUID(),
+                    "username",
+                    "email@email.com",
+                    "password",
+                    Instant.now(),
+                    null
+            );
+            doReturn(Optional.of(user))
+                    .when(userRepository)
+                    .findById(uuidUserArgumentCaptor.capture());
+
+            // Act
+            var output = userService.getUserById(user.getUserId().toString());
+
+            // Assert
+            assertTrue(output.isPresent());
+            assertEquals(user.getUserId(), uuidUserArgumentCaptor.getValue());
+        }
+
+        @Test
+        @DisplayName("Get User By Id With Success When Optional Is Empty")
+        void shouldGetUserByIdWithSuccessWhenOptionalIEmpty() {
+
+            // Arrange
+            var userId = UUID.randomUUID();
+            doReturn(Optional.empty()).when(userRepository).findById(uuidUserArgumentCaptor.capture());
+
+            // Act
+            var output = userService.getUserById(userId.toString());
+
+            // Assert
+            assertTrue(output.isEmpty());
+            assertEquals(userId, uuidUserArgumentCaptor.getValue());
+        }
+    }
+
