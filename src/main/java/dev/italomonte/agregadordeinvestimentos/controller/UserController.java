@@ -2,6 +2,7 @@ package dev.italomonte.agregadordeinvestimentos.controller;
 
 import dev.italomonte.agregadordeinvestimentos.entity.User;
 import dev.italomonte.agregadordeinvestimentos.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,15 +10,12 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
-@RestController
+@RestController // Combination of @Controller and @ResponseBody // Statelles API -> Don't Store client state
 @RequestMapping("/v1/users")
 public class UserController {
 
-    private final UserService userService;
-
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
+    @Autowired // Means that this dependency need to be injected
+    private UserService userService;
 
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody CreateUserDto createUserDto) {
