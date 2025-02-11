@@ -136,3 +136,48 @@ class UserServiceTest {
         }
     }
 
+    @Nested
+    class listUsers {
+        @Test
+        @DisplayName("Should return all users with success")
+        void shouldReturnAllUsersWithSuccess() {
+
+            // Arrange
+            var user = new User(
+                    UUID.randomUUID(),
+                    "username",
+                    "email@email.com",
+                    "password",
+                    Instant.now(),
+                    null
+            );
+            var userList = List.of(user);
+            doReturn(userList)
+                    .when(userRepository)
+                    .findAll();
+
+            // Act
+            var output = userService.listUsers();
+
+            // Assert
+            assertNotNull(output);
+            assertEquals(userList.size(), output.size());
+        }
+
+        @Test
+        @DisplayName("Get User By Id With Success When Optional Is Empty")
+        void shouldGetUserByIdWithSuccessWhenOptionalIEmpty() {
+
+            // Arrange
+            var userId = UUID.randomUUID();
+            doReturn(Optional.empty()).when(userRepository).findById(uuidUserArgumentCaptor.capture());
+
+            // Act
+            var output = userService.getUserById(userId.toString());
+
+            // Assert
+            assertTrue(output.isEmpty());
+            assertEquals(userId, uuidUserArgumentCaptor.getValue());
+        }
+    }
+}
