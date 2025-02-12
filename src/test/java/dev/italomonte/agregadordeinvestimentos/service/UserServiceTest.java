@@ -220,15 +220,76 @@ class UserServiceTest {
         }
     }
 
+    @Nested
+    class updateUserById {
+
+        @Test
+        @DisplayName("Should Update User By Id When User Exists And Username And Password is Filled")
+        void shouldUpdateUserByIdWhenUserExistsAndUsernameAndPasswordIsFilled() {
+
+            // Arrange
+            var updateUserDto = new UpdateUserDto(
+                    "newUsername",
+                    "newPassword"
+            );
+
+            var user = new User(
+                    UUID.randomUUID(),
+                    "username",
+                    "email@email.com",
+                    "password",
+                    Instant.now(),
+                    null
+            );
+            doReturn(Optional.of(user))
+                    .when(userRepository)
+                    .findById(uuidUserArgumentCaptor.capture());
+            doReturn(user)
+                    .when(userRepository)
+                    .save(userArgumentCaptor.capture());
+
+            // Act
+            userService.updateUserById(user.getUserId().toString(), updateUserDto);
+
+            // Assert
+            assertEquals(user.getUserId(), uuidUserArgumentCaptor.getValue());
+
+            var userCaptured = userArgumentCaptor.getValue();
+            assertEquals(user.getUsername(), userCaptured.getUsername());
+            assertEquals(user.getPassword(), userCaptured.getPassword());
+
+            verify(userRepository, times(1))
+                    .findById(uuidUserArgumentCaptor.getValue());
+
+            verify(userRepository, times(1))
+                    .save(user);
+        }
+
+        @Test
+        @DisplayName("Should not update user when user not exists")
+        void shouldNotUpdateUserWhenUserNotExists() {
+
+            // Arrange
+
+            var updateUserDto = new UpdateUserDto(
+                    "newUsername",
+                    "newPassword"
+            );
             var userId = UUID.randomUUID();
             doReturn(Optional.empty()).when(userRepository).findById(uuidUserArgumentCaptor.capture());
 
             // Act
-            var output = userService.getUserById(userId.toString());
+            var output = userService.updateUserById(userId.toString(), updateUserDto);
 
             // Assert
-            assertTrue(output.isEmpty());
             assertEquals(userId, uuidUserArgumentCaptor.getValue());
+
+            verify(userRepository, times(1))
+                    .findById(uuidUserArgumentCaptor.getValue());
+
+            verify(userRepository, times(0)).save(any());
+
         }
     }
+
 }
