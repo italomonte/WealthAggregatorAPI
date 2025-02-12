@@ -1,6 +1,7 @@
 package dev.italomonte.agregadordeinvestimentos.service;
 
 import dev.italomonte.agregadordeinvestimentos.controller.CreateUserDto;
+import dev.italomonte.agregadordeinvestimentos.controller.UpdateUserDto;
 import dev.italomonte.agregadordeinvestimentos.entity.User;
 import dev.italomonte.agregadordeinvestimentos.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -20,8 +21,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -36,6 +36,7 @@ class UserServiceTest {
 
     @Captor // Captura o argumento que estamos passando dentro de um método
     private ArgumentCaptor<UUID> uuidUserArgumentCaptor;
+
 
     @Nested
     class createUser {
@@ -94,6 +95,7 @@ class UserServiceTest {
 
     @Nested
     class getUserById {
+
         @Test
         @DisplayName("Get User By Id With Success When Optional Is Present")
         void shouldGetUserByIdWithSuccessWhenOptionalIsPresent() {
@@ -138,6 +140,7 @@ class UserServiceTest {
 
     @Nested
     class listUsers {
+
         @Test
         @DisplayName("Should return all users with success")
         void shouldReturnAllUsersWithSuccess() {
@@ -163,12 +166,60 @@ class UserServiceTest {
             assertNotNull(output);
             assertEquals(userList.size(), output.size());
         }
+    }
+
+    @Nested
+    class deleteUserById {
 
         @Test
-        @DisplayName("Get User By Id With Success When Optional Is Empty")
-        void shouldGetUserByIdWithSuccessWhenOptionalIEmpty() {
+        @DisplayName("Should delete user with success when user exists")
+        void shouldDeleteUserWithSuccessWhenUserExist() {
 
             // Arrange
+            // Mockando chamadas existById e deleeteById
+            doReturn(true).when(userRepository).existsById(uuidUserArgumentCaptor.capture());
+            doNothing().when(userRepository).deleteById(uuidUserArgumentCaptor.capture());
+
+            var userId = UUID.randomUUID();
+
+            // Act
+            userService.deleteUserById(userId.toString());
+
+            // Assert
+            var idList = uuidUserArgumentCaptor.getAllValues();
+            assertEquals(userId, idList.get(0));
+            assertEquals(userId, idList.get(1));
+
+            verify(userRepository, times(1)).existsById(idList.get(0));
+            verify(userRepository, times(1)).deleteById(idList.get(1));
+        }
+
+        @Test
+        @DisplayName("Should delete user with success when user not exists")
+        void shouldDeleteUserWithSuccessWhenUserNotExist() {
+
+            // Arrange
+            // Mockando chamadas existById
+            doReturn(false)
+                    .when(userRepository)
+                    .existsById(uuidUserArgumentCaptor.capture());
+
+            var userId = UUID.randomUUID();
+
+            // Act
+            userService.deleteUserById(userId.toString());
+
+            // Assert
+            assertEquals(userId, uuidUserArgumentCaptor.getValue());
+
+            verify(userRepository, times(1))
+                    .existsById( uuidUserArgumentCaptor.getValue());
+
+            // Cenário onde que que o metodo deleteById n seja chamado, por isso o any
+            verify(userRepository, times(0)).deleteById(any());
+        }
+    }
+
             var userId = UUID.randomUUID();
             doReturn(Optional.empty()).when(userRepository).findById(uuidUserArgumentCaptor.capture());
 
