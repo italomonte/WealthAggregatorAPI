@@ -10,6 +10,7 @@ public class BillingAddress {
 
     @Id
     @Column(name = "account_id")
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @OneToOne

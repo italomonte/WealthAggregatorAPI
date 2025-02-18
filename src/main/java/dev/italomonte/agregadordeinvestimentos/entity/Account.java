@@ -11,7 +11,7 @@ public class Account {
     @Id
     @Column(name = "account_id")
     @GeneratedValue(strategy = GenerationType.UUID) // Quando persistir se o campo n estiver preenchido ele gera um campo de id aleatório
-    private UUID account_id;
+    private UUID accountId;
 
     @OneToOne
     @JoinColumn(name = "account")
@@ -28,25 +28,25 @@ public class Account {
     public Account() {
     }
 
-    public Account(String description, UUID account_id) {
+    public Account(String description, UUID accountId) {
         this.description = description;
-        this.account_id = account_id;
+        this.accountId = accountId;
     }
 
-    public UUID getAccount_id() {
-        return account_id;
+    public UUID getAccountId() {
+        return accountId;
     }
 
-    public void setAccount_id(UUID account_id) {
-        this.account_id = account_id;
+    public void setAccountId(UUID accountId) {
+        this.accountId = accountId;
     }
 
-    public String getDescription() {
-        return description;
+    public BillingAddress getBillingAddress() {
+        return billingAddress;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setBillingAddress(BillingAddress billingAddress) {
+        this.billingAddress = billingAddress;
     }
 
     public User getUser() {
@@ -55,5 +55,13 @@ public class Account {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
