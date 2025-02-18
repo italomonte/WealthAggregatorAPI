@@ -2,6 +2,7 @@ package dev.italomonte.agregadordeinvestimentos.entity;
 
 import jakarta.persistence.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -18,12 +19,16 @@ public class Account {
     @PrimaryKeyJoinColumn
     private BillingAddress billingAddress;
 
-    @ManyToOne // varias contas para um usário
+    @ManyToOne // várias contas para um usário
     @JoinColumn(name = "user_id")
     private User user;
 
     @Column(name = "description")
     private String description;
+
+    @OneToMany(mappedBy = "account")
+    private List<AccountStock> accountStocks;
+
 
     public Account() {
     }
