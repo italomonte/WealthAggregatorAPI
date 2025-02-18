@@ -8,9 +8,13 @@ import java.util.UUID;
 @Table(name = "tb_accounts")
 public class Account {
 
+    @Id
+    @Column(name = "account_id")
+    @GeneratedValue(strategy = GenerationType.UUID) // Quando persistir se o campo n estiver preenchido ele gera um campo de id aleatório
+    private UUID account_id;
 
-    @JoinColumn(name = "user_id")
     @ManyToOne // varias contas para um usário
+    @JoinColumn(name = "user_id")
     private User user;
 
     @Column(name = "description")
@@ -38,5 +42,13 @@ public class Account {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
