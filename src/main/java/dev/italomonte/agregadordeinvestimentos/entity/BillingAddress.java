@@ -1,9 +1,6 @@
 package dev.italomonte.agregadordeinvestimentos.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.UUID;
 
@@ -12,7 +9,13 @@ import java.util.UUID;
 public class BillingAddress {
 
     @Id
+    @Column(name = "account_id")
     private UUID id;
+
+    @OneToOne
+    @MapsId // inidica pro hibernate que pega o indentificado da account  e guarda dentro do valor id dessa class
+    @JoinColumn(name = "account_id")
+    private Account account;
 
     @Column(name = "street")
     private String street;

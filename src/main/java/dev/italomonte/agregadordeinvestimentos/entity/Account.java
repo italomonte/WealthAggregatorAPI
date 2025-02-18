@@ -13,6 +13,11 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.UUID) // Quando persistir se o campo n estiver preenchido ele gera um campo de id aleatório
     private UUID account_id;
 
+    @OneToOne
+    @JoinColumn(name = "account")
+    @PrimaryKeyJoinColumn
+    private BillingAddress billingAddress;
+
     @ManyToOne // varias contas para um usário
     @JoinColumn(name = "user_id")
     private User user;
